@@ -1,0 +1,60 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[colorlinks=false]{hyperref}
+
+\begin{document}
+
+\title{Hacking 10Base--T Ethernet\\for Underwater Optical Communication}
+\author{UC the Fish}
+
+\maketitle
+
+\section*{Introduction}
+
+One of the funtional requirements for UC the Fish was modular optic communication,
+or the communication system should be easy to integrate with devices that need to
+communicate; a plug--and--play solution.
+
+Nearly every modern computer has at least \mbox{10Base--T Ethernet} and
+\mbox{USB 2.0} connectivity, so any ``modular'' communication attachement
+should use one of these protocols--at least at its endpoints.
+We chose to \mbox{10Base--T ethernet}, not just at the interfaces but to
+send the ethernet signal itself through water in the form of intensity
+of blue light.
+This allowed us to focus on building blue light transmit and receive
+hardware instead of attempting to develop light transmit/receive hardware
+\textit{and} a modulation protocol + logic giving it USB endpoints.
+
+Ethernet allows multiple stations to share a single medium,
+which is appropriate for water because light spreads in every direction
+and data cannot be multiplexed over different wavelegth channels. 
+It includes hardware support for cyclic redundancy bit checking,
+up to 16 retransmission attempts in the case of bit errors or disruption
+of the medium, and at \mbox{10 MHz}, ethernet is fast enough 
+for live streaming video.
+
+Unlike USB, a temporary dissruption in the data link does not require
+renegotiation time and application level link management.
+Software applications can use the operating system to handle TCP protocol
+when data integrity and delivery aknowledgement are necessary, instead
+of writing custom code to ensure control commands reach the sub intact.
+
+\section*{Getting the Standard}
+
+IEEE Std 802.3 is the standard for Ethernet communication.
+It is freely available online but is so large it is split into multiple
+sections.
+The first section (only 555 pages!) is available at
+\url{https://standards.ieee.org/getieee802/download/802.3-2012\_section1.pdf}.
+
+\section*{Ethernet 101 \footnote{Or in other words, an Ethernet Preamble. Hehe.}}
+
+\section*{More Details from the Standard}
+
+
+
+\section*{Influence on Transmitter/Receiver Design}
+
+\section*{Testing a Transmit/Receive Pair}
+
+\end{document}
