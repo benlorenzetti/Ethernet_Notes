@@ -55,6 +55,20 @@ The first section (only 555 pages!) is available at
 
 \section*{Influence on Transmitter/Receiver Design}
 
-\section*{Testing a Transmit/Receive Pair}
+\begin{enumerate}
+\item The first component in the light transmitter input
+and last component of the receiver output should be a 1:1, ethernet approved
+transformer and standard RJ45 connector.
+\item The input impedance of light transmitter must be $100\,\Omega$.
+\item The bandwidth of both light transmitter and receiver must exceed $10\,MHz$
+by several harmonics, and
+\item their phase shift between $5\,MHz$ and $10\,MHz$ should be negligible.
+\item The magnitude response of light transmitter + receiver in series,
+to a $100\,ns$, $585\,mV$ step input, should be $\geq585\,mV$ when loaded by $100\,\Omega$.
+\end{enumerate}
+
+\section*{Limitations of Ethernet}
+
+
 
 \end{document}
