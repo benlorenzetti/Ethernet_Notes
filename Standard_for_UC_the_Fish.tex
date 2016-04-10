@@ -1,6 +1,8 @@
 \documentclass{article}
 \usepackage{graphicx}
 \usepackage[colorlinks=false]{hyperref}
+\usepackage{capt-of}
+\usepackage{listings}
 
 \begin{document}
 
@@ -9,7 +11,7 @@
 
 \maketitle
 
-\section*{Introduction}
+\section{Introduction}
 
 One of the funtional requirements for UC the Fish was modular optic communication,
 or the communication system should be easy to integrate with devices that need to
@@ -39,7 +41,7 @@ Software applications can use the operating system to handle TCP protocol
 when data integrity and delivery aknowledgement are necessary, instead
 of writing custom code to ensure control commands reach the sub intact.
 
-\section*{Getting the Standard}
+\section{Getting the Standard}
 
 IEEE Std 802.3 is the standard for Ethernet communication.
 It is freely available online but is so large it is split into multiple
@@ -47,13 +49,38 @@ sections.
 The first section (only 555 pages!) is available at
 \url{https://standards.ieee.org/getieee802/download/802.3-2012\_section1.pdf}.
 
-\section*{Ethernet 101 \footnote{Or in other words, an Ethernet Preamble. Hehe.}}
+\section[title]{Ethernet 101 \footnote{Or in other words, an Ethernet Preamble. Hehe.}}
 
-\section*{More Details from the Standard}
+Ethernet is a time--domain communication protocol for connecting any number of
+machines via a single, shared medium.
+Each \textit{station} is given a unique address when it is manufactured and
+data is sent serially--1 bit at a time--in \textit{packets} between
+stations.
+
+\begin{center}
+	\includegraphics[width=0.75\textwidth]{ethernet-packet.pdf}
+	\captionof{figure}{Format of an Ethernet Packet.}
+\end{center}
+
+Time sharing of the medium is done by all stations following
+\textit{Carrier Sense Multiple Access with Collision Detection}
+(CSMA/CD) protocol.
+Only one station may transmit at a time and all stations must constantly
+monitor the line, looking for packets addressed to them and seeing when
+the line is open for transmission (CSMA).
+After completion of a packet, all stations must wait an
+\textit{interpacket gap} before transmitting a packet of their own.
+If two stations transmit at the same time, both must detect a collision
+and backoff for a period of time (/CD).
+A pseudorandom exponential backoff algorithm is used to make repeat
+collisions unlikely.
+Retransmission is attempted up to 16 times when collisions occur.
+
+\section{More Details from the Standard}
 
 
 
-\section*{Influence on Transmitter/Receiver Design}
+\section{Influence on Transmitter/Receiver Design}
 
 \begin{enumerate}
 \item The first component in the light transmitter input
@@ -67,8 +94,35 @@ by several harmonics, and
 to a $100\,ns$, $585\,mV$ step input, should be $\geq585\,mV$ when loaded by $100\,\Omega$.
 \end{enumerate}
 
-\section*{Limitations of Ethernet}
+\section{Limitations for Underwater Communication}
 
+There are two limitations associated with sending 10Base--T ethernet signals,
+unmodified, through water by modulating light intensity.
+Both limitations are related to the separation of transmit and receive signals
+in 10Base--T networks how the stations detect collisions.
 
+First, is the isolation of transmit and receive signals in twisted--pair media.
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{crossover-point.pdf}
+	\label{crossover-point}
+	\captionof{figure}{The Crossover Point: distance at which reflected light from \mbox{station A's} own transmitter is more intense than
+light arriving from far--away \mbox{station B's}.}
+\end{center}
+
+Second, the \textit{link integrity test} specified in the standard for twisted--pair media.
+
+\appendix
+
+\pagebreak
+\section{Ethernet Test Scripts}
+
+\lstinputlisting{Makefile}
+
+\pagebreak
+\lstinputlisting{broadcast_packet.c}
+
+\pagebreak
+\lstinputlisting{ethernet_listen.c}
 
 \end{document}
