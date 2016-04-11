@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage[letterpaper, margin=1.25in]{geometry}
 \usepackage{graphicx}
 \usepackage[colorlinks=false]{hyperref}
 \usepackage{capt-of}
@@ -6,14 +7,14 @@
 
 \begin{document}
 
-\title{Hacking 10Base--T Ethernet\\for Underwater Optical Communication}
+\title{Using 10Base--T Ethernet\\for Underwater Optic Communication}
 \author{UC the Fish}
 
 \maketitle
 
 \section{Introduction}
 
-One of the funtional requirements for UC the Fish was modular optic communication,
+One funtional requirement for UC the Fish was modular optic communication,
 or the communication system should be easy to integrate with devices that need to
 communicate; a plug--and--play solution.
 
@@ -51,7 +52,7 @@ The first section (only 555 pages!) is available at
 
 \section[title]{Ethernet 101 \footnote{Or in other words, an Ethernet Preamble. Hehe.}}
 
-Ethernet is a time--domain communication protocol for connecting any number of
+Ethernet is a time domain communication protocol for connecting any number of
 machines via a single, shared medium.
 Each \textit{station} is given a unique address when it is manufactured and
 data is sent serially--1 bit at a time--in \textit{packets} between
@@ -60,24 +61,24 @@ stations.
 \begin{center}
 	\includegraphics[width=0.75\textwidth]{ethernet-packet.pdf}
 	\captionof{figure}{Format of an Ethernet Packet.}
+	\label{packet-format}
 \end{center}
 
 Time sharing of the medium is done by all stations following
 \textit{Carrier Sense Multiple Access with Collision Detection}
 (CSMA/CD) protocol.
-Only one station may transmit at a time and all stations must constantly
+Only one station may transmit at a time and all stations constantly
 monitor the line, looking for packets addressed to them and seeing when
 the line is open for transmission (CSMA).
-After completion of a packet, all stations must wait an
-\textit{interpacket gap} before transmitting a packet of their own.
-If two stations transmit at the same time, both must detect a collision
+After completion of a packet, all stations wait an
+\textit{interpacket gap} before attempting to transmit a packet of their own.
+If two stations transmit at the same time, both detect a collision
 and backoff for a period of time (/CD).
 A pseudorandom exponential backoff algorithm is used to make repeat
-collisions unlikely.
-Retransmission is attempted up to 16 times when collisions occur.
+collisions unlikely and retransmission is attempted up to 16 times
+below the level of the operating system.
 
 \section{More Details from the Standard}
-
 
 
 \section{Influence on Transmitter/Receiver Design}
@@ -98,19 +99,63 @@ to a $100\,ns$, $585\,mV$ step input, should be $\geq585\,mV$ when loaded by $10
 
 There are two limitations associated with sending 10Base--T ethernet signals,
 unmodified, through water by modulating light intensity.
-Both limitations are related to the separation of transmit and receive signals
-in 10Base--T networks how the stations detect collisions.
+Both are related to the separation of transmit and receive pairs
+in 10Base--T, and how stations detect collisions.
 
 First, is the isolation of transmit and receive signals in twisted--pair media.
+The 10Base--T ethernet hardware on modern computers expect to operate in full
+duplex mode, that is when they still listen on the receive line for when
+other stations own the network, but when they transmit they expect silence
+on the receive pair--they do not expect to hear their own signal.
+If the station hears anything on the receive line when it is transmitting,
+it interprets it as a jam signal from a router and stops transmittng immediately.
+
+This is a limitation in sending ethernet as light: there will be some
+level of reflected light due to the optical interface and from particles in the water.
+If the receiver circuit is built to have a fixed gain, then it must be below
+the threshold at which it would jam itself.
+
+To determine at what distance and signal magnitude this might occur,
+tested the current response of the photodiode to the blue LED with 20 mA current
+in water at different distances.
+A 5 inch acrylic security camera dome was used and the test was performed in
+tap water.
+The results, shown in figure \ref{crossover-point} suggested that the overall gain
+should be less than
+\begin{equation}
+|Z_{gain}| \leq \frac{V_{\textrm{threshold}}}{I_{reflected}}=\frac{585\,mV}{26\,nA}=22.5*10^{6}\,\Omega
+\end{equation}
+and that the maximum distance 10Base--T ethernet could be transmitted with purely analog transmit/receive
+circuits is about 25 centimeters.
 
 \begin{center}
 	\includegraphics[width=0.8\textwidth]{crossover-point.pdf}
+	\captionof{figure}{Crossover Point: the distance at which reflected light from \mbox{station A's} own transmitter is more intense than
+light arriving from far--away \mbox{station B's}. I.e. the distance at which water/light stop behaving like an ethernet crossover cable.}
 	\label{crossover-point}
-	\captionof{figure}{The Crossover Point: distance at which reflected light from \mbox{station A's} own transmitter is more intense than
-light arriving from far--away \mbox{station B's}.}
 \end{center}
 
-Second, the \textit{link integrity test} specified in the standard for twisted--pair media.
+The second limitation of 10Base--T ethernet is due to the required \textit{link integrity test}
+specified in the standard.
+A station is not allowed to transmit unless it hears either incoming packets or
+a special pulse from a router indicating no traffic but good connection.
+This means that a one--way link cannot be tested; both directions must be complete
+in order for either station to send out data.
+
+This does not limit the final product, but it does make it more difficult to test
+prototypes: two transmit and two receive circuits must be built and if
+any one piece doesn't work, then neither computer will even try to broadcast data.
+To help with this problem, UC the Fish built a special ethernet cable with
+one Tx--Rx pair connected and the other opened with Tx and Rx RJ45 plugs.
+The cable can be used as shown in figure \ref{ethernet-test-setup}.
+
+\begin{center}
+	\includegraphics[width=1\textwidth]{ethernet-test-setup}
+	\captionof{figure}{UC the Fish Test Setup, using custom crossover cable,
+two Linux PCs, and test programs 
+\texttt{broadcast\_packet.c} and \texttt{ethernet\_listen.c}.}
+	\label{ethernet-test-setup}
+\end{center}
 
 \appendix
 
