@@ -1,4 +1,4 @@
-﻿\documentclass{article}
+\documentclass{article}
 \usepackage[letterpaper, margin=1.25in]{geometry}
 \usepackage{graphicx}
 \usepackage[colorlinks=false]{hyperref}
@@ -59,7 +59,7 @@ data is sent serially--1 bit at a time--in \textit{packets} between
 stations.
 
 \begin{center}
-	\includegraphics[width=0.75\textwidth]{ethernet-packet.pdf}
+	\includegraphics[width=0.75\textwidth]{ethernet_packet.png}
 	\captionof{figure}{Format of an Ethernet Packet.}
 	\label{packet-format}
 \end{center}
@@ -81,7 +81,7 @@ below the level of the operating system.
 \section{More Details from the Standard}
 
 \begin{center}
-	\includegraphics[width=0.75\textwidth]{timing-diagram.pdf}
+	\includegraphics[width=0.75\textwidth]{timing_diagram.png}
 	\captionof{figure}{Non--return to Zero and Manchester Encoding.}
 	\label{timing-diagram}
 \end{center}
@@ -127,7 +127,7 @@ tested the current response of the photodiode to the blue LED with 20 mA current
 in water at different distances.
 A 5 inch acrylic security camera dome was used and the test was performed in
 tap water.
-The results, shown in figure \ref{crossover-point} suggested that the overall gain
+The results, shown in figure \ref{crossover-distance} suggested that the overall gain
 should be less than
 \begin{equation}
 |Z_{gain}| \leq \frac{V_{\textrm{threshold}}}{I_{reflected}}=\frac{585\,mV}{26\,nA}=22.5*10^{6}\,\Omega
@@ -136,10 +136,10 @@ and that the maximum distance 10Base--T Ethernet could be transmitted with purel
 circuits is about 25 centimeters.
 
 \begin{center}
-	\includegraphics[width=0.8\textwidth]{crossover-point.pdf}
+	\includegraphics[width=0.8\textwidth]{crossover-distance.png}
 	\captionof{figure}{Crossover Point: the distance at which reflected light from \mbox{station A's} own transmitter is more intense than
 light arriving from far--away \mbox{station B's}. I.e. the distance at which water/light stop behaving like an Ethernet crossover cable.}
-	\label{crossover-point}
+	\label{crossover-distance}
 \end{center}
 
 The second limitation of 10Base--T Ethernet is due to the required \textit{link integrity test}
@@ -154,14 +154,14 @@ prototypes: two transmit and two receive circuits must be built and if
 any one piece doesn't work, then neither computer will even try to broadcast data.
 To help with this problem, UC the Fish built a special Ethernet cable with
 one Tx--Rx pair connected and the other opened with Tx and Rx RJ45 plugs.
-The cable can be used as shown in figure \ref{ethernet-test-setup}.
+The cable can be used as shown in figure \ref{custom-crossover-cable}.
 
 \begin{center}
-	\includegraphics[width=1\textwidth]{ethernet-test-setup}
+	\includegraphics[width=1\textwidth]{custom_crossover_cable.png}
 	\captionof{figure}{UC the Fish Test Setup, using custom crossover cable,
 two Linux PCs, and test programs 
 \texttt{broadcast\_packet.c} and \texttt{ethernet\_listen.c}.}
-	\label{ethernet-test-setup}
+	\label{custom-crossover-cable}
 \end{center}
 
 \appendix
