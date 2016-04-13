@@ -18,4 +18,5 @@
 *.cb
 *.cb2
 
-
+# Ignore PDFs - use PNGs for figures
+*.pdf
