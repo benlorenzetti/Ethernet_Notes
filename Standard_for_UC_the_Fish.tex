@@ -55,7 +55,7 @@ The first section (only 555 pages!) is available at
 Ethernet is a time domain communication protocol for connecting any number of
 machines via a single, shared medium.
 Each \textit{station} is given a unique address when it is manufactured and
-data is sent serially--1 bit at a time--in \textit{packets} between
+data is sent serially (1 bit at a time) in \textit{packets} between
 stations.
 
 \begin{center}
@@ -72,13 +72,30 @@ monitor the line, looking for packets addressed to them and seeing when
 the line is open for transmission (CSMA).
 After completion of a packet, all stations wait an
 \textit{interpacket gap} before attempting to transmit a packet of their own.
-If two stations transmit at the same time, both detect a collision
-and backoff for a period of time (/CD).
+If two stations start transmitting simultaneously,
+both detect a collision on the medium and backoff for a period of time (/CD).
 A pseudo random exponential backoff algorithm is used to make repeat
 collisions unlikely and retransmission is attempted up to 16 times
-below the level of the operating system.
+(below the level of the operating system).
 
-\section{More Details from the Standard}
+Ethernet has been in widespread use since the 80s and the standard has
+evolved over that time.
+The biggest change was probably the switch from 10 MHz on coax cable
+to 10 MHz on twisted--pair telephone cable, which was named 10Base--T.
+The standard is backwards compatible, so even though UC the Fish is only
+interested in using 10Base--T,
+it is helpful to describe both to understand all the acrnymns, block diagrams,
+and separation of functions in the standard.
+\footnote{Often the functions assigned to blocks and the block
+boundaries themselves seem strange until you consider backward compatibility
+and other standards like the ISO/OSI model.
+Two narrative thoughts on this subject: (1) ethernet seems to have evolved much
+more gracefully than other standards with backwards compatibility and (2)
+a lot of introductory material on ethernet spends time talking
+about the ISO/OSI model here, but I think there are already enough three letter
+acronyms and block models for a newbie as it is.
+I see the appeal, its beautiful that someone made consistent generic/specific
+models and the palindreamyness of ISO and OSI, but I'm not going to avoid that path.}
 
 \begin{center}
 	\includegraphics[width=0.75\textwidth]{timing_diagram.png}
@@ -86,7 +103,8 @@ below the level of the operating system.
 	\label{timing-diagram}
 \end{center}
 
-
+STMicroelectronics STM32F107RCT6 is 64 pin ARM microcontroller with a MAC but no PHY. It has MII and RMII interface.
+PIC18F67J60-I/PT from Microchip Technology has MAC with integrated PHY.
 
 \section{Influence on Transmitter/Receiver Design}
 
@@ -109,15 +127,15 @@ unmodified, through water by modulating light intensity.
 Both are related to the separation of transmit and receive pairs
 in 10Base--T, and how stations detect collisions.
 
-First, is the isolation of transmit and receive signals in twisted--pair media.
-The 10Base--T Ethernet hardware on modern computers expect to operate in full
+First is the isolation of transmit and receive signals in twisted--pair media.
+10Base--T Ethernet hardware on modern computers expect to operate in full
 duplex mode, that is when they still listen on the receive line for when
 other stations own the network, but when they transmit they expect silence
 on the receive pair--they do not expect to hear their own signal.
 If the station hears anything on the receive line when it is transmitting,
 it interprets it as a jam signal from a router and stops transmitting immediately.
 
-This is a limitation in sending Ethernet as light: there will be some
+This is a limitation in sending Ethernet as light because there will be some
 level of reflected light due to the optical interface and from particles in the water.
 If the receiver circuit is built to have a fixed gain, then it must be below
 the threshold at which it would jam itself.
@@ -136,7 +154,7 @@ and that the maximum distance 10Base--T Ethernet could be transmitted with purel
 circuits is about 25 centimeters.
 
 \begin{center}
-	\includegraphics[width=0.8\textwidth]{crossover-distance.png}
+	\includegraphics[width=0.8\textwidth]{crossover_distance.png}
 	\captionof{figure}{Crossover Point: the distance at which reflected light from \mbox{station A's} own transmitter is more intense than
 light arriving from far--away \mbox{station B's}. I.e. the distance at which water/light stop behaving like an Ethernet crossover cable.}
 	\label{crossover-distance}
